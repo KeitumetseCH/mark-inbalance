@@ -5,16 +5,17 @@
 //+------------------------------------------------------------------+
 #property copyright ""
 #property link      ""
-#property version   "1.0"
+#property version   "1.1"
 #property indicator_chart_window
 
 //Input variable declaration
-input color percLineColor = C'0,255,0'; //Line Colour
+input color percBuyLineColor = C'0,255,0'; //Buy Line Colour
+input color percSellLineColor = C'255,0,0'; //Sell Line Colour
 input string indicatorMarkPercHotKey = "m"; //Mark Percentage Hotkey
 input string indicatorClearHotKey = "c"; //Clear Indicator Data Hotkey
 input string indicatorText = "Inbalance"; //Description Text
 
-//global variable declaration
+// Global variable declaration
 double price1 = 0;
 double price2 = 0;
 double priceDiff = 0;
@@ -58,6 +59,7 @@ void OnChartEvent(const int id, const long& lparam, const double& dparam, const 
       int y = (int)dparam;
       double gapSize;
       int window = 0;
+      color percLineColor;
       
       if(ChartXYToTimePrice(0,x,y,window,dt,price)){ // Retrieve mouse position on the chart
          if(priceCount == 0){
@@ -71,6 +73,11 @@ void OnChartEvent(const int id, const long& lparam, const double& dparam, const 
          
          if(priceCount == 1){
             priceDiff = price1 - price2;
+            if(price1 < price2){
+               percLineColor = percBuyLineColor;
+            }else{
+               percLineColor = percSellLineColor;
+            }
             gapSize = NormalizeDouble(priceDiff/_Point,0);
             priceDiff = priceDiff / 2;
             priceDiff = price2 + priceDiff;
